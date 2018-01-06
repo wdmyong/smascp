@@ -13,20 +13,15 @@ import org.apache.tomcat.util.threads.TaskThreadFactory;
 /**
  * @author wdmyong 2018/01/05
  */
-public class SimpleClient {
+public class Client {
     public static void main(String[] args) throws Exception {
         connect();
         ExecutorService executorService = Executors.newFixedThreadPool(4,
                 new TaskThreadFactory("myThread-", true, 10));
-        executorService.submit(() -> connect());
-        //Thread.sleep(10);
-        executorService.submit(() -> connect());
-        //Thread.sleep(10);
-        executorService.submit(() -> connect());
-        executorService.submit(() -> connect());
-        executorService.submit(() -> connect());
-        executorService.submit(() -> connect());
-        executorService.submit(() -> connect());
+        for (int i = 0; i < 20; i++) {
+            //Thread.sleep(10);
+            executorService.submit(() -> connect());
+        }
         executorService.shutdown();
         executorService.awaitTermination(1, TimeUnit.MINUTES);
     }
@@ -34,7 +29,7 @@ public class SimpleClient {
     private static void connect() {
         String msg = Thread.currentThread().getName() + " Hello world, my Server...";
         try {
-            Socket socket = new Socket("127.0.0.1", 8090);
+            Socket socket = new Socket("127.0.0.1", 8096);
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
             pw.println(msg);
             pw.flush();
